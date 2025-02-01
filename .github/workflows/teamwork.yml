@@ -1,0 +1,26 @@
+name: Teamwork Status
+
+on:
+  pull_request:
+    types: [opened, closed, edited]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  teamwork-sync:
+    runs-on: ubuntu-latest
+    name: Teamwork Sync
+    steps:
+      - uses: gearbox-solutions/teamwork-github-sync@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEAMWORK_URI: "https://projects.gearboxgo.com"
+          TEAMWORK_API_TOKEN: ${{ secrets.TEAMWORK_API_TOKEN }}
+          AUTOMATIC_TAGGING: false
+          BOARD_COLUMN_OPENED: 'Code Review'
+          BOARD_COLUMN_CHANGES_REQUESTED: 'In Progress'
+          BOARD_COLUMN_APPROVED: 'Internal QA'
+          BOARD_COLUMN_MERGED: 'Approved'
+          BOARD_COLUMN_CLOSED: 'In Progress'
+        env:
+          IGNORE_PROJECT_IDS: '1 2 3'

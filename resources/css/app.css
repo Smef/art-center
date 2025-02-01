@@ -1,0 +1,24 @@
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+    @tailwind base;
+}
+
+@layer tailwind-utilities {
+    @tailwind components;
+    @tailwind utilities;
+}
+
+[x-cloak] {
+    display: none;
+}
+
+/* disable pinch-to-zoom for a more native experience with PWAs */
+* {
+    touch-action: pan-x pan-y;
+}
+
+/* PrimeVue uses a 14px font-size by default */
+html {
+    font-size: 14px;
+}

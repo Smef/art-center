@@ -1,0 +1,46 @@
+name: "Code Style"
+on: [ pull_request ]
+
+jobs:
+  code_style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get all changed php/js files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          # Avoid using single or double quotes for multiline patterns
+          files_yaml: |
+            php:
+              - '**/**.php'
+            js:
+              - resources/js/**/**.{js,ts,vue,d.ts}
+      - name: "Laravel Pint"
+        if: steps.changed-files.outputs.php_any_changed == 'true'
+        uses: aglipanci/laravel-pint-action@2.3.0
+        with:
+          verboseMode: true
+          testMode: true
+          useComposer: true
+          configPath: "./pint.json ${{ steps.changed-files.outputs.php_all_changed_files }}"
+      - uses: pnpm/action-setup@v4
+        if: steps.changed-files.outputs.js_any_changed == 'true'
+        with:
+          version: 'latest'
+      - uses: actions/setup-node@v4
+        if: steps.changed-files.outputs.js_any_changed == 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install
+        if: steps.changed-files.outputs.js_any_changed == 'true'
+      - name: "ESLint"
+        if: steps.changed-files.outputs.js_any_changed == 'true'
+        uses: sibiraj-s/action-eslint@master
+        with:
+          ignore-path: '.eslintignore'
+          extensions: 'js,ts,vue'
+          annotations: true
+          use-npx: true
+          token: ${{ secrets.GITHUB_TOKEN }}

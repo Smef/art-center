@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+    echo "Encrypting .env.$1 environment file..."
+else
+    echo "Please specify an environment file to encrypt."
+    exit 1
+fi
+
+php artisan env:encrypt --env=$1 --key={ENCRYPTION_KEY} --force

@@ -1,0 +1,45 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      php: 8.3
+      nodejs: 20
+  pre_build:
+    commands:
+      - echo Build started on `date`
+      - echo "Installing Composer Dependencies"
+      - composer install --no-dev --optimize-autoloader --no-progress
+      - echo "decrypting env file"
+      - php artisan env:decrypt --env=$APP_ENV --key=$LARAVEL_ENV_ENCRYPTION_KEY
+      - echo "Copying .env.$APP_ENV to .env"
+      - cp ".env.$APP_ENV" .env
+      - echo "Installing PNPM"
+      - npm install -g pnpm
+      - echo "Installing Node Dependencies"
+      - pnpm install
+  build:
+    commands:
+      - echo Building Assets
+      - pnpm run build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '.platform/**/*'
+    - 'app/**/*'
+    - 'bootstrap/**/*'
+    - 'config/**/*'
+    - 'database/**/*'
+    - 'lang/**/*'
+    - 'public/**/*'
+    - 'resources/**/*'
+    - 'routes/**/*'
+    - 'storage/**/*'
+    - 'vendor/**/*'
+    - '.env.*.encrypted'
+    - 'artisan'
+    - 'composer.json'
+    - 'composer.lock'
+  name: "Projects"

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+    echo "Decrypting .env.$1 environment file..."
+else
+    echo "Please specify an environment file to decrypt."
+    exit 1
+fi
+
+php artisan env:decrypt --env=$1 --key={ENCRYPTION_KEY} --force
