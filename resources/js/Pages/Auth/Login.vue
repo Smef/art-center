@@ -102,6 +102,7 @@ const showPasswordInput = ref(false);
                     required
                     autocomplete="username"
                     :error-message="form.errors.email"
+                    name="email"
                 />
 
                 <LabeledTextInput
@@ -113,6 +114,7 @@ const showPasswordInput = ref(false);
                     required
                     autocomplete="current-password"
                     :error-message="form.errors.password"
+                    name="password"
                 />
 
                 <div class="mt-4 block">

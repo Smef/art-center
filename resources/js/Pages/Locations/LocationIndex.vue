@@ -2,7 +2,7 @@
 import ModelIndexTable from "@/Components/ModelIndexTable.vue";
 import SearchInput from "@/Components/SearchInput.vue";
 import ModelIndexTableColumn from "@/Types/ModelIndexTableColumn";
-import Company from "@/Types/Models/Company";
+import Location from "@/Types/Models/Location";
 import PaginatedData from "@/Types/PaginatedData";
 import { Head, Link, router } from "@inertiajs/vue3";
 import Button from "primevue/button";
@@ -12,7 +12,7 @@ import { PropType, ref, watch } from "vue";
 
 const props = defineProps({
     paginatedData: {
-        type: Object as PropType<PaginatedData<Company>>,
+        type: Object as PropType<PaginatedData<Location>>,
         required: true,
     },
 });
@@ -38,11 +38,6 @@ const columns: ModelIndexTableColumn[] = [
         textAlign: "right",
     },
     {
-        label: "Logo",
-        width: "200px",
-        slotName: "logo",
-    },
-    {
         label: "Name",
         key: "name",
         bold: true,
@@ -58,19 +53,19 @@ const columns: ModelIndexTableColumn[] = [
 ];
 
 function changePage({ page }: { page: number }) {
-    router.get(props.paginatedData.links[page + 1].url ?? "/companies");
+    router.get(props.paginatedData.links[page + 1].url ?? "/locations");
 }
 </script>
 
 <template>
     <div>
-        <Head title="Companies" />
+        <Head title="Locations" />
 
         <div class="flex items-center justify-between">
-            <h1 class="text-4xl">Companies</h1>
+            <h1 class="text-4xl">Locations</h1>
 
             <Button
-                :href="route('companies.create')"
+                :href="route('locations.create')"
                 label="Create New"
                 :as="Link"
             />
@@ -93,17 +88,9 @@ function changePage({ page }: { page: number }) {
 
                     <ModelIndexTable
                         :data="paginatedData.data"
-                        route-name="companies.show"
+                        route-name="locations.show"
                         :columns="columns"
                     >
-                        <template #logo="{ model: company }: { model: Company }">
-                            <img
-                                :src="company.logo_url"
-                                class="max-h-10 w-full object-contain"
-                                :alt="company.name + ' company logo'"
-                                v-if="company.logo_url"
-                            />
-                        </template>
                     </ModelIndexTable>
 
                     <Paginator

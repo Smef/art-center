@@ -57,17 +57,17 @@ const handleClickFlyoutItem = () => {
             ref="menuButton"
         >
             <span class="flex items-center justify-start gap-x-3 overflow-clip px-4 text-left transition-all">
-                <img
-                    class="h-12 w-12 rounded-full object-cover"
-                    :src="user.profile_photo_url"
-                    :alt="user.name"
-                />
+                <div
+                    class="flex size-12 flex-none items-center justify-center rounded-full bg-primary-500 text-lg font-medium text-white"
+                >
+                    {{ user.name_first[0] }}{{ user.name_last[0] }}
+                </div>
 
                 <span
                     class="transition-all"
                     :class="{ '': expanded, 'opacity-0': !expanded }"
                 >
-                    <span class="">{{ user.name }}</span>
+                    <span class="">{{ user.name_full }}</span>
                 </span>
             </span>
         </button>

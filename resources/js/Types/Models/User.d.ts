@@ -8,7 +8,9 @@ export default interface User extends Model {
     fax: string;
     group_ids: number[];
     is_admin: boolean;
-    name: string;
+    name_first: string;
+    name_last: string;
+    name_full: string;
     permissions: string[];
     profile_photo_url: string;
     role: string;

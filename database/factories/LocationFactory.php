@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Company>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Location>
  */
-class CompanyFactory extends Factory
+class LocationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,13 +17,13 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company(),
+            'name' => $this->faker->words(3, true),
             'website' => $this->faker->url(),
             'phone' => $this->faker->phoneNumber(),
             'address_street' => $this->faker->streetAddress(),
             'address_city' => $this->faker->city(),
             'address_state' => $this->faker->stateAbbr(),
-            'address_zip' => substr($this->faker->postcode(), 0, 5),
+            'address_zip' => $this->faker->postcode(),
         ];
     }
 }

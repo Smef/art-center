@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import FormSubmitButton from "@/Components/FormSubmitButton.vue";
-import LabeledFileInput from "@/Components/LabeledFileInput.vue";
 import LabeledSelectMenu from "@/Components/LabeledSelectMenu.vue";
 import LabeledTextInput from "@/Components/LabeledTextInput.vue";
-import Company from "@/Types/Models/Company";
 import stateHelper from "@/Utilities/stateHelper";
 import { Head, Link } from "@inertiajs/vue3";
 import { useForm } from "laravel-precognition-vue-inertia";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import DataView from "primevue/dataview";
-import { PropType, ref } from "vue";
+import { PropType } from "vue";
+import Location from "@/Types/Models/Location";
 
 const props = defineProps({
-    company: {
-        type: Object as PropType<Company>,
+    location: {
+        type: Object as PropType<Location>,
         required: true,
     },
 });
 
 const states = stateHelper.stateList;
 
-const placeholderFile = new File([], "thumbnail");
+// const placeholderFile = new File([], "thumbnail");
 
 // we have to POST to upload a file, but can spoof put for Laravel actions
-const spoofMethod = props.company?.id ? "PUT" : "POST";
-const submitRoute = props.company?.id ? route("companies.update", props.company.id) : route("companies.store");
+const spoofMethod = props.location?.id ? "PUT" : "POST";
+const submitRoute = props.location?.id ? route("locations.update", props.location.id) : route("locations.store");
 const form = useForm<{
     _method: string;
     name: string;
@@ -35,60 +34,36 @@ const form = useForm<{
     address_city?: string;
     address_state?: string;
     address_zip?: string;
-    logo: File | null;
 }>("post", submitRoute, {
     _method: spoofMethod,
-    name: props.company.name,
-    website: props.company.website,
-    phone: props.company.phone,
-    address_street: props.company.address_street,
-    address_city: props.company.address_city,
-    address_state: props.company.address_state,
-    address_zip: props.company.address_zip,
-    logo: null,
-}).validateFiles();
-
-// ref the logo from here instead of the form so that we don't accidentally submit the placeholder file
-const logo = ref(props.company.logo_url ? placeholderFile : undefined);
+    name: props.location.name,
+    website: props.location.website,
+    phone: props.location.phone,
+    address_street: props.location.address_street,
+    address_city: props.location.address_city,
+    address_state: props.location.address_state,
+    address_zip: props.location.address_zip,
+});
 
 function submit() {
     form.submit({ preserveScroll: true });
 }
 
-function deleteCompany() {
-    form.delete(route("companies.destroy", props.company.id));
-}
-
-function handleLogoChange(file: File) {
-    form.logo = file || null;
-    form.validate("logo");
+function deleteLocation() {
+    form.delete(route("locations.destroy", props.location.id));
 }
 </script>
 
 <template>
     <div>
-        <Head :title="company.name" />
+        <Head :title="location.name" />
 
-        <h1 class="mb-4 text-4xl">{{ company.id ? company.name : "New Company" }}</h1>
+        <h1 class="mb-4 text-4xl">{{ location.id ? location.name : "New Location" }}</h1>
 
         <div class="flex flex-col gap-x-8 gap-y-8 lg:flex-row">
             <form @submit.prevent="submit">
                 <Card>
                     <template #content>
-                        <LabeledFileInput
-                            v-model="logo"
-                            class="h-52 w-52"
-                            @change="handleLogoChange"
-                            :error-message="form.errors.logo"
-                            id="logo"
-                            label="Logo"
-                            name="logo"
-                            hint="Image file up to 1MB"
-                            :size-limit-kb="1024"
-                            @file-too-large="form.setErrors({ logo: 'File is too large.' })"
-                            :thumbnail="props.company.logo_url"
-                        />
-
                         <div class="flex flex-col gap-6">
                             <LabeledTextInput
                                 label="Name"
@@ -97,7 +72,7 @@ function handleLogoChange(file: File) {
                                 v-model="form.name"
                                 type="text"
                                 required
-                                :autofocus="!company.id"
+                                :autofocus="!location.id"
                                 autocomplete="name"
                                 :error-message="form.errors.name"
                                 @change="form.validate('name')"
@@ -160,9 +135,9 @@ function handleLogoChange(file: File) {
                             <div>
                                 <Button
                                     severity="danger"
-                                    v-if="props.company?.id"
-                                    :href="route('companies.destroy', props.company.id)"
-                                    @click="deleteCompany"
+                                    v-if="props.location?.id"
+                                    :href="route('locations.destroy', props.location.id)"
+                                    @click="deleteLocation"
                                     label="Delete"
                                 />
                             </div>
@@ -170,7 +145,7 @@ function handleLogoChange(file: File) {
                             <div class="flex items-center gap-x-2">
                                 <Button
                                     severity="secondary"
-                                    :href="route('companies.index')"
+                                    :href="route('locations.index')"
                                     label="Cancel"
                                     :as="Link"
                                 />
@@ -190,7 +165,10 @@ function handleLogoChange(file: File) {
                 <Card>
                     <template #title> Contacts </template>
                     <template #content>
-                        <DataView :value="company.contacts">
+                        <DataView
+                            :value="location.contacts"
+                            data-key="id"
+                        >
                             <template #list="{ items: contacts }">
                                 <ul
                                     role="list"

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->string('name')->index();
             $table->string('website')->nullable();
             $table->string('phone')->nullable();
@@ -20,9 +21,7 @@ return new class extends Migration
             $table->string('address_city')->nullable();
             $table->string('address_state', 2)->nullable();
             $table->string('address_zip', 10)->nullable();
-            $table->string('logo_filename', 255)->nullable();
             $table->fullText(['name']);
-            $table->timestamps();
         });
     }
 
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('locations');
     }
 };

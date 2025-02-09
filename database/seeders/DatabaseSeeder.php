@@ -14,17 +14,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CompanySeeder::class,
-            ContactSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
-            ProjectSeeder::class,
-            VoucherSeeder::class,
+            LocationSeeder::class,
+            CourseSeeder::class,
         ]);
 
         $david = new User;
-        $david->name = 'David Nahodyl';
-        $david->email = 'david@gearboxgo.com';
+        $david->name_first = 'David';
+        $david->name_last = 'Nahodyl';
+        $david->email = 'david.nahodyl@gmail.com';
         $david->password = Hash::make('OSMIUM-roe-madcap');
         $david->assignRole('Admin');
         $david->save();

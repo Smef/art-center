@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProjectDocumentStoreRequest extends FormRequest
+class LocationStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,13 +21,8 @@ class ProjectDocumentStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        $maxUploadSize = 100 * 1024; // MB to KB
-
         return [
-            'project_id' => 'required|exists:projects,id',
-            'description' => 'required',
-            // max file size is 100MB
-            'file' => 'required|file|max:'.$maxUploadSize,
+            //
         ];
     }
 }

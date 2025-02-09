@@ -24,25 +24,18 @@ const guard = useGuard();
 
 const navLinks = computed((): NavLinkType[] => [
     {
-        label: "Companies",
+        label: "Locations",
         icon: CompanyBuilding,
         visible: true,
-        active: route().current("companies.*"),
-        href: route("companies.index"),
+        active: route().current("locations.*"),
+        href: route("locations.index"),
     },
     {
-        label: "Contacts",
+        label: "Courses",
         icon: ContactIcon,
         visible: true,
-        active: route().current("contacts.*"),
-        href: route("contacts.index"),
-    },
-    {
-        label: "Projects",
-        icon: VoucherIcon,
-        visible: true,
-        active: route().current("projects.*"),
-        href: route("projects.index"),
+        active: route().current("courses.*"),
+        href: route("courses.index"),
     },
     {
         label: "Settings",
@@ -63,13 +56,6 @@ const navLinks = computed((): NavLinkType[] => [
                 href: route("settings.roles.index"),
             },
         ],
-    },
-    {
-        label: "Vouchers",
-        icon: VoucherIcon,
-        visible: true,
-        active: route().current("vouchers.*"),
-        href: route("vouchers.index"),
     },
 ]);
 </script>

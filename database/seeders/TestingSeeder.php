@@ -14,10 +14,9 @@ class TestingSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CompanySeeder::class,
-            ContactSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
+            LocationSeeder::class,
         ]);
 
         $david = new User;

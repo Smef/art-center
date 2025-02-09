@@ -60,12 +60,12 @@ const props = defineProps({
         default: false,
     },
     displayProperty: {
-        type: Object as PropType<keyof T & string>,
+        type: String as PropType<keyof T & string>,
         required: false,
         default: undefined,
     },
     valueProperty: {
-        type: Object as PropType<keyof T & string>,
+        type: String as PropType<keyof T & string>,
         required: false,
         default: undefined,
     },

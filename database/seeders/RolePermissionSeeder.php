@@ -23,8 +23,8 @@ class RolePermissionSeeder extends Seeder
         // Set up permissiong
         // Make a permission for approved staff users to access the app
         $accessApp = Permission::create([
-            'name' => 'access app',
-            'description' => 'General access to the app.',
+            'name' => 'staff access',
+            'description' => 'General internal access.',
         ]);
 
         // Make a permission to access the admin area
@@ -32,6 +32,11 @@ class RolePermissionSeeder extends Seeder
             'name' => 'access admin',
             'description' => 'Access the admin areas such as user and role management.',
         ]);
+
+        // Make a student role
+        Role::create([
+            'name' => 'Student',
+        ])->givePermissionTo($accessApp);
 
         // Make a basic staff group
         Role::create([
