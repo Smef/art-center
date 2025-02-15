@@ -10,6 +10,7 @@ import Button from "primevue/button";
 import Card from "primevue/card";
 import DataView from "primevue/dataview";
 import { PropType } from "vue";
+import User from "@/Types/Models/User";
 
 const props = defineProps({
     course: {
@@ -18,6 +19,10 @@ const props = defineProps({
     },
     locations: {
         type: Array as PropType<Location[]>,
+        required: true,
+    },
+    teachers: {
+        type: Array as PropType<User[]>,
         required: true,
     },
 });
@@ -41,6 +46,14 @@ function submit() {
 function deleteCourse() {
     form.delete(route("courses.destroy", props.course.id));
 }
+
+function searchTeachers(search: string) {
+    // fetch teachers from the server
+}
+
+function handleTeacherSelected(teacher: Teacher) {
+    // add the teacher to the course
+}
 </script>
 
 <template>
@@ -51,7 +64,7 @@ function deleteCourse() {
 
         <div class="flex flex-col gap-x-8 gap-y-8 lg:flex-row">
             <form @submit.prevent="submit">
-                <Card>
+                <Card class="w-96">
                     <template #content>
                         <div class="flex flex-col gap-6">
                             <LabeledTextInput
@@ -132,7 +145,23 @@ function deleteCourse() {
 
             <div v-if="course.id">
                 <Card class="mb-8">
-                    <template #title>Teachers</template>
+                    <template #title>
+                        <div class="flex justify-between">
+                            <div>Teachers</div>
+                            <SearchDialogButton
+                                @update-search="searchTeachers"
+                                :display-data="teachers"
+                                @selected="handleTeacherSelected"
+                                v-slot="{ option }: { option: Teacher }"
+                            >
+                                <div>{{ option.name }}</div>
+
+                                <div class="text-sm text-surface-400">
+                                    {{ option.address_city }}, {{ option.address_state }}
+                                </div>
+                            </SearchDialogButton>
+                        </div>
+                    </template>
                     <template #content>
                         <DataView
                             :value="course.teachers"
