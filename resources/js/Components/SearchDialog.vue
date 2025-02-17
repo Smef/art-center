@@ -152,7 +152,7 @@ function handleKeyDown(event: KeyboardEvent) {
                         :class="{
                             'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-white':
                                 item === selectedItem,
-                            'dark:hover:bg-surface-00 hover:bg-surface-100': item !== selectedItem,
+                            'hover:bg-surface-100 dark:hover:bg-surface-800': item !== selectedItem,
                         }"
                     >
                         <slot :option="item">

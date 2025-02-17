@@ -8,6 +8,6 @@ export default interface Course extends Model {
     location?: Location;
     start_date: string; // ISO date string
     end_date: string; // ISO date string
-    students?: User[]; // Many-to-many relationship through course_students
+    students?: User[]; // Many-to-many relationship through enrollments
     teachers?: User[]; // Many-to-many relationship through course_teachers
 }

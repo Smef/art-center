@@ -28,11 +28,9 @@ const props = defineProps({
 });
 
 const showDialog = ref(false);
-const query = ref("");
 const selectedItem = ref<T | null>(null);
 
 function openSearchDialog() {
-    query.value = "";
     showDialog.value = true;
     selectedItem.value = props.displayData[0] ?? null;
 }
@@ -42,13 +40,9 @@ const emit = defineEmits(["update-search", "selected"]);
 function handleSelected(entry: T) {
     emit("selected", entry);
 }
-function handleSearchChanged() {
-    emit("update-search", query.value);
+function handleSearchChanged(query: string) {
+    emit("update-search", query);
 }
-
-watch(query, () => {
-    handleSearchChanged();
-});
 
 watch(
     () => props.displayData,

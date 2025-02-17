@@ -4,17 +4,33 @@ import LabeledTextInput from "@/Components/LabeledTextInput.vue";
 import LabeledSelectMenu from "@/Components/LabeledSelectMenu.vue";
 import Course from "@/Types/Models/Course";
 import Location from "@/Types/Models/Location";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 import { useForm } from "laravel-precognition-vue-inertia";
 import Button from "primevue/button";
 import Card from "primevue/card";
-import DataView from "primevue/dataview";
 import { PropType } from "vue";
 import User from "@/Types/Models/User";
+import SearchDialogButton from "@/Components/SearchDialogButton.vue";
+import CourseTeacherBase from "@/Types/Models/CourseTeacher";
+import CourseEnrollments from "@/Pages/Courses/Partials/CourseEnrollments.vue";
+import XCircle from "@/Components/Icons/XCircle.vue";
+import WithRequired from "@/Types/WithRequired";
+import CourseTeachers from "@/Pages/Courses/Partials/CourseTeachers.vue";
+
+// Use our WithRequired type to ensure the teacher is always present, since this should be sent from the server
+type CourseTeacher = WithRequired<CourseTeacherBase, "teacher">;
 
 const props = defineProps({
     course: {
         type: Object as PropType<Course>,
+        required: true,
+    },
+    courseTeachers: {
+        type: Array as PropType<CourseTeacher[]>,
+        required: true,
+    },
+    enrollments: {
+        type: Array as PropType<User[]>,
         required: true,
     },
     locations: {
@@ -23,7 +39,8 @@ const props = defineProps({
     },
     teachers: {
         type: Array as PropType<User[]>,
-        required: true,
+        required: false,
+        default: () => [],
     },
 });
 
@@ -46,14 +63,6 @@ function submit() {
 function deleteCourse() {
     form.delete(route("courses.destroy", props.course.id));
 }
-
-function searchTeachers(search: string) {
-    // fetch teachers from the server
-}
-
-function handleTeacherSelected(teacher: Teacher) {
-    // add the teacher to the course
-}
 </script>
 
 <template>
@@ -62,7 +71,7 @@ function handleTeacherSelected(teacher: Teacher) {
 
         <h1 class="mb-4 text-4xl">{{ course.id ? course.name : "New Course" }}</h1>
 
-        <div class="flex flex-col gap-x-8 gap-y-8 lg:flex-row">
+        <div class="flex flex-col items-start gap-x-8 gap-y-8 lg:flex-row">
             <form @submit.prevent="submit">
                 <Card class="w-96">
                     <template #content>
@@ -143,97 +152,17 @@ function handleTeacherSelected(teacher: Teacher) {
                 </Card>
             </form>
 
-            <div v-if="course.id">
-                <Card class="mb-8">
-                    <template #title>
-                        <div class="flex justify-between">
-                            <div>Teachers</div>
-                            <SearchDialogButton
-                                @update-search="searchTeachers"
-                                :display-data="teachers"
-                                @selected="handleTeacherSelected"
-                                v-slot="{ option }: { option: Teacher }"
-                            >
-                                <div>{{ option.name }}</div>
-
-                                <div class="text-sm text-surface-400">
-                                    {{ option.address_city }}, {{ option.address_state }}
-                                </div>
-                            </SearchDialogButton>
-                        </div>
-                    </template>
-                    <template #content>
-                        <DataView
-                            :value="course.teachers"
-                            data-key="id"
-                        >
-                            <template #list="{ items: teachers }">
-                                <ul
-                                    role="list"
-                                    class="divide-y lg:max-w-lg dark:divide-surface-700"
-                                >
-                                    <li
-                                        v-for="teacher in teachers"
-                                        :key="teacher.id"
-                                    >
-                                        <Link
-                                            class="flex justify-between gap-x-6 px-5 py-5 hover:bg-surface-100 dark:hover:bg-surface-800"
-                                        >
-                                            <div class="flex min-w-0 gap-x-4">
-                                                <div class="min-w-0 flex-auto">
-                                                    <p class="text-sm font-semibold leading-6 text-color-emphasis">
-                                                        {{ teacher.name_full }}
-                                                    </p>
-                                                    <p class="mt-1 truncate text-xs leading-5 text-muted-color">
-                                                        {{ teacher.email }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </template>
-                        </DataView>
-                    </template>
-                </Card>
-
-                <Card>
-                    <template #title>Students</template>
-                    <template #content>
-                        <DataView
-                            :value="course.students"
-                            data-key="id"
-                        >
-                            <template #list="{ items: students }">
-                                <ul
-                                    role="list"
-                                    class="divide-y lg:max-w-lg dark:divide-surface-700"
-                                >
-                                    <li
-                                        v-for="student in students"
-                                        :key="student.id"
-                                    >
-                                        <Link
-                                            class="flex justify-between gap-x-6 px-5 py-5 hover:bg-surface-100 dark:hover:bg-surface-800"
-                                        >
-                                            <div class="flex min-w-0 gap-x-4">
-                                                <div class="min-w-0 flex-auto">
-                                                    <p class="text-sm font-semibold leading-6 text-color-emphasis">
-                                                        {{ student.name_full }}
-                                                    </p>
-                                                    <p class="mt-1 truncate text-xs leading-5 text-muted-color">
-                                                        {{ student.email }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </template>
-                        </DataView>
-                    </template>
-                </Card>
-            </div>
+            <CourseTeachers
+                :course-teachers="courseTeachers"
+                :course-id="course.id"
+                :teachers="teachers"
+            />
+        </div>
+        <div class="pt-8">
+            <CourseEnrollments
+                :enrollments="enrollments"
+                :course-id="course.id"
+            />
         </div>
     </div>
 </template>

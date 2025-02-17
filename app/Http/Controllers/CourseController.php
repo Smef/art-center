@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CourseUpdateRequest;
 use App\Models\Course;
+use App\Models\CourseTeacher;
+use App\Models\Enrollment;
 use App\Models\Location;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -72,14 +75,32 @@ class CourseController extends Controller
      */
     public function edit(Course $course): Response
     {
-        $course->load(['location', 'students', 'teachers']);
+        $course->load(['location']);
+
+        $courseTeachers = $course->courseTeachers()->with('teacher')->get();
+        $enrollments = $course->enrollments()->with('student')->get();
 
         $data = [
             'course' => $course,
-            'locations' => Location::orderBy('name')->get(),
+            'courseTeachers' => $courseTeachers,
+            'enrollments' => $enrollments,
+            'locations' => fn () => Location::orderBy('name')->get(),
+            'teachers' => Inertia::lazy(fn () => $this->searchTeachers(request()->query('search-teachers', ''))),
         ];
 
         return Inertia::render('Courses/CourseEdit', $data);
+    }
+
+    protected function searchTeachers($search)
+    {
+        $search = request()->query('search-teachers', '');
+
+        return User::query()
+            ->where('name_first', 'like', $search.'%')
+            ->orWhere('name_last', 'like', $search.'%')
+            ->limit(10)
+            ->orderBy('name_first')
+            ->get();
     }
 
     /**

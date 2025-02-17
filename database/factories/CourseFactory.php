@@ -36,9 +36,9 @@ class CourseFactory extends Factory
     {
         return $this->afterCreating(function ($course) {
             // Add random number of students (0-5)
-            $studentCount = $this->faker->numberBetween(0, 5);
+            $studentCount = $this->faker->numberBetween(0, 12);
             $students = User::inRandomOrder()->limit($studentCount)->get();
-            $course->students()->attach($students);
+            $course->enrollments()->createMany($students->map(fn ($student) => ['user_id' => $student->id]));
 
             // Add random number of teachers (1-2)
             $teacherCount = $this->faker->numberBetween(1, 2);

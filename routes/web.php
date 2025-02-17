@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseTeacherController;
+use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OAuthCallbackController;
 use App\Http\Controllers\OAuthRedirectController;
@@ -47,6 +49,10 @@ Route::middleware([
     Route::resource('locations', LocationController::class);
 
     Route::resource('courses', CourseController::class);
+
+    Route::resource('course-teachers', CourseTeacherController::class)->only(['store', 'destroy']);
+
+    Route::resource('enrollments', EnrollmentController::class)->only(['store', 'destroy']);
 
     Route::middleware('hasPermission:access admin')->prefix('settings')->name('settings.')->group(function () {
         Route::resource('users', UserController::class);
